@@ -35,7 +35,7 @@ class Plotter:
         plt.ylabel(ylabel or y)
         plt.show()
 
-    def scatter_plot(self, data, x, y, title=None, xlabel=None, ylabel=None):
+    def scatter_plot(self, data, x, y, title=None, xlabel=None, ylabel=None, hue=None, alpha=1.0):
         plt.figure(figsize=(8, 5))
         sns.scatterplot(x=x, y=y, data=data)
         plt.title(title or f"Scatter Plot: {x} vs {y}")
