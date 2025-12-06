@@ -64,14 +64,22 @@ class Plotter:
         plt.show()
 
     # Additional EDA Plots
-    def count_plot(self, data, column, title=None, xlabel=None, ylabel="Count", rotation=0):
-        plt.figure(figsize=(8, 5))
+    def count_plot(self, data, column, title=None, xlabel=None, ylabel="Count", rotation=None):
+        plt.figure(figsize=(12, 6))
         sns.countplot(x=column, data=data)
         plt.title(title or f"Count Plot of {column}")
         plt.xlabel(xlabel or column)
         plt.ylabel(ylabel)
-        plt.xticks(rotation=rotation)
+
+        # auto-rotate long labels
+        if rotation is not None:
+            plt.xticks(rotation=rotation, ha='right')
+        else:
+            plt.xticks(rotation=45 if data[column].nunique() > 5 else 0, ha='right')
+
+        plt.tight_layout()
         plt.show()
+
 
     def kde_plot(self, data, column, title=None, xlabel=None, ylabel="Density"):
         plt.figure(figsize=(8, 5))
