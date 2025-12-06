@@ -35,12 +35,21 @@ class Plotter:
         plt.ylabel(ylabel or y)
         plt.show()
 
-    def scatter_plot(self, data, x, y, title=None, xlabel=None, ylabel=None, hue=None, alpha=1.0):
-        plt.figure(figsize=(8, 5))
-        sns.scatterplot(x=x, y=y, data=data)
-        plt.title(title or f"Scatter Plot: {x} vs {y}")
+    def scatter_plot(
+        self, data, x, y, hue=None, palette=None, alpha=1.0,
+        title=None, xlabel=None, ylabel=None, figsize=(10,6), legend_title=None
+    ):
+        """
+        Scatter plot with optional hue, palette, alpha, and legend title.
+        """
+        plt.figure(figsize=figsize)
+        sns.scatterplot(data=data, x=x, y=y, hue=hue, palette=palette, alpha=alpha)
+        plt.title(title or f'Scatter Plot of {x} vs {y}')
         plt.xlabel(xlabel or x)
         plt.ylabel(ylabel or y)
+        if hue is not None:
+            plt.legend(title=legend_title or hue, bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.tight_layout()
         plt.show()
 
     def box_plot(self, data, column, by=None, title=None, xlabel=None, ylabel=None):
