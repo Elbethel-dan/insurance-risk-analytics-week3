@@ -52,17 +52,17 @@ class Plotter:
         plt.tight_layout()
         plt.show()
 
-    def box_plot(self, data, column, by=None, title=None, xlabel=None, ylabel=None):
-        plt.figure(figsize=(8, 5))
-        if by:
-            sns.boxplot(x=by, y=column, data=data)
-            plt.title(title or f"Box Plot of {column} by {by}")
-            plt.xlabel(xlabel or by)
-            plt.ylabel(ylabel or column)
-        else:
-            sns.boxplot(y=data[column])
-            plt.title(title or f"Box Plot of {column}")
-            plt.ylabel(ylabel or column)
+    def box_plot(self, data, column, title=None, xlabel=None, ylabel=None):
+        """
+        Box plot for a single numeric column, cleaning infinite values and NaNs.
+        """
+        plt.figure(figsize=(8,4))
+        # Replace inf/-inf with NaN and drop missing values
+        clean_data = data[column].replace([np.inf, -np.inf], np.nan).dropna()
+        sns.boxplot(x=clean_data)
+        plt.title(title or f'Box Plot of {column}')
+        plt.xlabel(xlabel or column)
+        plt.ylabel(ylabel or '')
         plt.show()
 
     def heatmap(self, data, title="Correlation Heatmap"):
