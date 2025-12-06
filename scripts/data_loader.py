@@ -27,10 +27,8 @@ def load_data(file_path: str) -> pd.DataFrame:
             return pd.read_json(file_path, lines=True)
 
         elif file_ext == "txt":
-            # Your original TXT behavior (kept exactly the same)
-            with open(file_path, "r", encoding="utf-8") as f:
-                lines = f.read().splitlines()
-            return pd.DataFrame(lines, columns=["text"])
+            # Use the internal helper to read TXT as CSV
+            return load_txt_as_csv(file_path, delimiter="|")
 
         else:
             raise ValueError(f"Unsupported file type: .{file_ext}")
