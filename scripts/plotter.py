@@ -65,7 +65,7 @@ class Plotter:
 
     # Additional EDA Plots
     def count_plot(self, data, column, title=None, xlabel=None, ylabel="Count", rotation=None):
-        plt.figure(figsize=(12, 6))
+        plt.figure(figsize=(14, 6))
         sns.countplot(x=column, data=data)
         plt.title(title or f"Count Plot of {column}")
         plt.xlabel(xlabel or column)
