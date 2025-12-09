@@ -1,4 +1,4 @@
 [core]
-    remote = myremote
-['remote "myremote"']
+    remote = localstore
+['remote "localstore"']
     url = /Users/elbethelzewdie/Documents/Local_Storage
