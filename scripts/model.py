@@ -3,7 +3,7 @@
 # --------------------------------------------------------------
 # 📌 Importing Required Libraries
 # --------------------------------------------------------------
-
+import pandas as pd
 # Linear Regression is a parametric model that fits a straight line (or plane)
 # to predict a continuous target variable.
 from sklearn.linear_model import LinearRegression
@@ -18,7 +18,6 @@ from sklearn.ensemble import RandomForestRegressor
 # XGBoost is a powerful Gradient Boosting algorithm that builds trees sequentially
 # and corrects the errors of previous trees.
 import xgboost as xgb
-
 # train_test_split divides the dataset into training (learn) and testing (evaluate) sets.
 from sklearn.model_selection import train_test_split
 
@@ -47,31 +46,85 @@ def split_data(X, y, test_size=0.2, random_state=42):
 # --------------------------------------------------------------
 def train_models(X_train, y_train):
     """
-    Initializes and trains four different regression models.
-    Each model learns patterns from X_train to predict y_train.
+    Trains four regression models safely and efficiently.
+    Fixes XGBoost + pandas bug and adds good default hyperparameters
+    for the insurance claim severity / premium prediction task.
+    
+    Args:
+        X_train (pd.DataFrame or np.array): Features
+        y_train (pd.Series or np.array): Target (e.g., TotalClaims where claim > 0)
+    
+    Returns:
+        tuple: (lr, dt, rf, xgb) trained models
     """
+    
+    # ===================================================================
+    # 1. Safety conversion – this is the key fix for the XGBoost bug
+    # ===================================================================
+    if isinstance(X_train, pd.DataFrame):
+        # Drop any remaining object/category columns (should be none after proper encoding)
+        X_train_clean = X_train.select_dtypes(include=['int64', 'float64', 'int32', 'float32'])
+        
+        # Fill any NaN that might have slipped through (common in insurance data)
+        X_train_clean = X_train_clean.fillna(0)
+        
+        # XGBoost loves float32
+        X_train_xgb = X_train_clean.astype('float32')
+        X_train_other = X_train_clean  # sklearn models are fine with float64
+    else:
+        X_train_other = X_train
+        X_train_xgb = X_train.astype('float32')
 
-    # ---------- Initialize Models ----------
-    # Linear Regression → simple baseline model
+    # ===================================================================
+    # 2. Model initialisation with sensible defaults for insurance data
+    # ===================================================================
     lr_model = LinearRegression()
 
-    # Decision Tree → learns hierarchical rules (if/else)
-    dt_model = DecisionTreeRegressor(random_state=42)
+    dt_model = DecisionTreeRegressor(
+        max_depth=10,
+        min_samples_leaf=5,
+        random_state=42
+    )
 
-    # Random Forest → multiple trees averaged together (reduces overfitting)
-    rfr_model = RandomForestRegressor(random_state=42)
+    rfr_model = RandomForestRegressor(
+        n_estimators=300,
+        max_depth=15,
+        min_samples_leaf=2,
+        n_jobs=-1,
+        random_state=42
+    )
 
-    # XGBoost → boosting method that iteratively improves predictions
-    xgb_model = xgb.XGBRegressor(random_state=42)
+    xgb_model = xgb.XGBRegressor(
+        n_estimators=500,
+        learning_rate=0.05,
+        max_depth=7,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        reg_alpha=0.1,           # L1 regularisation
+        reg_lambda=1.0,          # L2 regularisation
+        random_state=42,
+        n_jobs=-1,
+        tree_method='hist',       # fast & memory-efficient
+        enable_categorical=False  # we already encoded everything
+    )
 
-    # ---------- Train (Fit) Models ----------
-    # Each .fit() step is the "learning" process.
-    lr_model.fit(X_train, y_train)
-    dt_model.fit(X_train, y_train)
-    rfr_model.fit(X_train, y_train)
-    xgb_model.fit(X_train, y_train)
+    # ===================================================================
+    # 3. Train models
+    # ===================================================================
+    print("Training Linear Regression...")
+    lr_model.fit(X_train_other, y_train)
 
-    # Return all trained models for evaluation/comparison
+    print("Training Decision Tree...")
+    dt_model.fit(X_train_other, y_train)
+
+    print("Training Random Forest...")
+    rfr_model.fit(X_train_other, y_train)
+
+    print("Training XGBoost... (this may take 10–30 seconds)")
+    xgb_model.fit(X_train_xgb, y_train)   # ← this line will now work perfectly
+
+    print("All 4 models trained successfully!")
+
     return lr_model, dt_model, rfr_model, xgb_model
 
 
