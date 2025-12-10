@@ -134,7 +134,7 @@ def train_models(X_train, y_train):
 # scripts/model.py  (← just replace the old evaluate_model with this)
 
 
-def evaluate_model(model, X_train_used_for_fit, X_test, y_test)
+def evaluate_model(model, X_train_used_for_fit, X_test, y_test):
     """
     Safely predicts and evaluates — fixes column mismatch forever.
     """
