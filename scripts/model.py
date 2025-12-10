@@ -134,30 +134,20 @@ def train_models(X_train, y_train):
 # scripts/model.py  (← just replace the old evaluate_model with this)
 
 
-def evaluate_model(model, X_train_used_for_fit, X_test, y_test):
+def evaluate_model(model, X_train_used_for_fit, X_test, y_test)
     """
-    Safely evaluates a trained model on the test set.
-    Fixes the column mismatch error by aligning X_test with X_train columns.
-
-    Parameters:
-        model                : trained sklearn/xgboost model
-        X_train_used_for_fit : the EXACT X_train DataFrame that was used in .fit()
-        X_test               : test features (may have different/missing columns)
-        y_test               : true target values
-
-    Returns:
-        mae, mse, r2, y_pred
+    Safely predicts and evaluates — fixes column mismatch forever.
     """
-    # ← THIS IS THE KEY FIX
+    # THIS LINE IS THE MAGIC FIX
     X_test_aligned = X_test.reindex(columns=X_train_used_for_fit.columns, fill_value=0)
-
+    
     # Now predict safely
     y_pred = model.predict(X_test_aligned)
-
+    
     mae = mean_absolute_error(y_test, y_pred)
     mse = mean_squared_error(y_test, y_pred)
     r2  = r2_score(y_test, y_pred)
-
+    
     return mae, mse, r2, y_pred
 
 
