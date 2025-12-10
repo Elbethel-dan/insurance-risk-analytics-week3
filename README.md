@@ -1,7 +1,5 @@
 # 📊 AlphaCare Insurance Solutions – Car Insurance Risk Analysis
 
-Marketing Analytics Project (Task 1 & Task 2)
-
 ### 🏢 Business Objective
 
 AlphaCare Insurance Solutions (ACIS) is committed to developing cutting-edge risk and predictive analytics for car insurance planning and marketing in South Africa.
@@ -93,3 +91,80 @@ DVC was introduced to ensure reproducibility, dataset version tracking, and clea
     git add insurance.csv.dvc .gitignore dvc.yaml
     git commit -m "Track raw insurance dataset with DVC"
    ```
+---
+
+## 📊 Task 3 — Statistical Hypothesis Testing
+
+This task focuses on statistically validating assumptions about key insurance risk drivers. These insights will guide the development of an effective segmentation strategy.
+
+### 🎯 Goal
+
+Test whether differences in claims, premiums, and risk metrics across customer groups are statistically significant.
+
+Confirm or reject business hypotheses that drive pricing and marketing decisions.
+
+### 🔍 What Was Done
+1. Formulated Clear Null (H₀) and Alternative (H₁) Hypotheses
+
+Hypotheses tested include:
+
+#### Geographic Risk
+
+H₀: There are no risk differences across provinces.
+
+H₁: At least one province shows significantly different risk.
+
+#### Zip-Code Risk
+
+H₀: There are no risk differences between zip codes.
+
+H₁: Some zip codes exhibit higher or lower risk.
+
+#### Margin Differences
+
+H₀: There is no significant difference in profit margin between zip codes.
+
+H₁: Profit margin varies significantly across zip codes.
+
+#### Gender Risk
+
+H₀: There is no significant risk difference between women and men.
+
+H₁: Gender groups show different levels of risk exposure or claim patterns.
+
+2. Applied Appropriate Statistical Tests
+
+Depending on the variable type and distribution:
+
+Chi-square tests → for categorical variables (Gender, Marital Status, Claim Frequency).
+
+ANOVA → for comparing risk across multiple groups (Provinces, Zip Codes).
+
+T-tests / Z-tests → for comparing mean differences (Margins, Premiums, Severity).
+
+3. Interpreted Test Results
+
+Checked p-values against significance level (α = 0.05).
+
+Rejected or failed to reject H₀ based on evidence.
+
+Summarized practical implications for segmentation strategy.
+
+
+---
+
+## 🤖 Task 4 — Predictive Modelling for Dynamic Risk-Based Pricing
+
+The goal of Task 4 is to develop machine learning models that can predict insurance risk and support real-time premium optimisation.
+
+#### Model Development
+
+Built and compared multiple models:
+
+Logistic Regression → for classifying claim likelihood
+
+Random Forest → for both classification and regression
+
+Gradient Boosting Models (XGBoost / LightGBM) → for superior predictive power
+
+Linear Models → for claim severity analysis
