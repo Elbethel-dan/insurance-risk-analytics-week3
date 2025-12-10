@@ -131,21 +131,32 @@ def train_models(X_train, y_train):
 # --------------------------------------------------------------
 # 📌 3. FUNCTION: Evaluate a Single Model
 # --------------------------------------------------------------
-def evaluate_model(model, X_test, y_test):
-    """
-    Predicts on test set and computes:
-    - MAE  → average absolute error
-    - MSE  → average squared error
-    - R²   → goodness of fit (1 = perfect)
-    """
+# scripts/model.py  (← just replace the old evaluate_model with this)
 
-    # Make predictions using the trained model
-    y_pred = model.predict(X_test)
 
-    # Calculate regression evaluation metrics
-    mae = mean_absolute_error(y_test, y_pred)   # Lower = better
-    mse = mean_squared_error(y_test, y_pred)    # Lower = better
-    r2 = r2_score(y_test, y_pred)               # Higher = better (max = 1)
+def evaluate_model(model, X_train_used_for_fit, X_test, y_test):
+    """
+    Safely evaluates a trained model on the test set.
+    Fixes the column mismatch error by aligning X_test with X_train columns.
+
+    Parameters:
+        model                : trained sklearn/xgboost model
+        X_train_used_for_fit : the EXACT X_train DataFrame that was used in .fit()
+        X_test               : test features (may have different/missing columns)
+        y_test               : true target values
+
+    Returns:
+        mae, mse, r2, y_pred
+    """
+    # ← THIS IS THE KEY FIX
+    X_test_aligned = X_test.reindex(columns=X_train_used_for_fit.columns, fill_value=0)
+
+    # Now predict safely
+    y_pred = model.predict(X_test_aligned)
+
+    mae = mean_absolute_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+    r2  = r2_score(y_test, y_pred)
 
     return mae, mse, r2, y_pred
 
